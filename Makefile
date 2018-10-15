@@ -16,3 +16,6 @@ $(OBJECTS):$(SOURCES) $(INCLUDES)
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
+
+test:
+	./$(TARGET) Test/test0.txt

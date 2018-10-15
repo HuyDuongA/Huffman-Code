@@ -34,30 +34,15 @@ node *array_to_list(int *array){
                 head->freq = array[i];
             }
             else
-                insert_node(head, array[i], (char)i);    
+                insert_list(head, array[i], (char)i);    
         }
     }
     return head;
 }
 
-void add_node_before(node *prev, node *curr, int f, char c){
-    prev->next = new_node();
-    prev->next->c = c;
-    prev->next->freq = f;
-    prev->next->next = curr;
-}
-
-void add_node_after(node *curr, int f, char c){
-    node *temp = curr->next;
-    curr->next = new_node();
-    curr->next->c = c;
-    curr->next->freq = f;
-    curr->next->next = temp;
-}
-
 /* Insert node to the right place in the list.
  * */
-void insert_node(node *head, int f, char c){
+void insert_list(node *head, int f, char c){
     node *prev, *curr;
     curr = prev = head;
     while(curr->next && curr->next->freq <= f){
@@ -77,12 +62,42 @@ void insert_node(node *head, int f, char c){
         add_node_before(prev, curr, f, c);
 }
 
+void add_node_before(node *prev, node *curr, int f, char c){
+    prev->next = new_node();
+    prev->next->c = c;
+    prev->next->freq = f;
+    prev->next->next = curr;
+}
+
+void add_node_after(node *curr, int f, char c){
+    node *temp = curr->next;
+    curr->next = new_node();
+    curr->next->c = c;
+    curr->next->freq = f;
+    curr->next->next = temp;
+}
+
 /* The function takes the linked list and create a tree. This function calls
  * two_to_one_node function to combine first two nodes together.
  * */
 node *sort_tree(node *list){
-    node *n_node = new_node();
-    return n_node;
+    node *new_node, *head, *first, *second;
+    head = list;
+    while(head->next){
+        if(!head->next->next)
+            head = two_to_one_node(head, head->next);
+        else{
+            first = head;
+            second = head->next;
+            head = head->next->next;
+            new_node = two_to_one_node(first, second);
+            insert_node(head, new_node);
+        }
+    }
+    return head;
+}
+
+void insert_node(node *head, node *new_node){
 }
 
 /* The function takes in two nodes, and combine them into one node 
@@ -91,6 +106,24 @@ node *sort_tree(node *list){
  * */
 node *two_to_one_node(node *first, node *second){
     node *n_node = new_node();
+    n_node->freq = first->freq + second->freq;
+    if(first->freq == second->freq){
+        if(first->c < second->c){
+            n_node->c = first->c;
+            n_node->left = first;
+            n_node->right = second;
+        }
+        else{
+            n_node->c = second->c;
+            n_node->left = second;
+            n_node->right = first;
+        }
+    }
+    else{
+        n_node->c = first->c;
+        n_node->left = first;
+        n_node->right = second;
+    }
     return n_node;
 }
 

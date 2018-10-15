@@ -11,7 +11,9 @@ void print_list(node *list){
     }
 }
 
-void print_tree(node *tree)
+void print_tree(node *tree){
+
+}
 
 int main(const int argc, const char *argv[]){
     char c;
