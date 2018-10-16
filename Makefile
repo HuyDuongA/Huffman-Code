@@ -19,3 +19,5 @@ clean:
 
 test:
 	./$(TARGET) Test/test0.txt
+	./$(TARGET) Test/test1.txt
+	./$(TARGET) Test/test2.txt

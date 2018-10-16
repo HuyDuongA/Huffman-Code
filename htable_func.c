@@ -7,6 +7,7 @@ node *new_node(){
     node *new_node = calloc(ONE_NODE, sizeof(node));
     new_node->c = (char)NULL;
     new_node->freq = 0;
+    new_node->h_encode = NULL;
     new_node->next = NULL;
     new_node->left = NULL;
     new_node->right = NULL;
@@ -34,7 +35,7 @@ node *array_to_list(int *array){
                 head->freq = array[i];
             }
             else
-                insert_list(head, array[i], (char)i);    
+                insert_list(&head, array[i], (char)i);    
         }
     }
     return head;
@@ -42,9 +43,9 @@ node *array_to_list(int *array){
 
 /* Insert node to the right place in the list.
  * */
-void insert_list(node *head, int f, char c){
+void insert_list(node **head, int f, char c){
     node *prev, *curr;
-    curr = prev = head;
+    curr = prev = *head;
     while(curr->next && curr->next->freq <= f){
         prev = curr;
         curr = curr->next;
@@ -54,19 +55,28 @@ void insert_list(node *head, int f, char c){
     }
     else if(curr->freq == f){
         if(curr->c > c)
-            add_node_before(prev, curr, f, c);
+            add_node_before(head, prev, curr, f, c);
         else
             add_node_after(curr, f, c);
     }
     else
-        add_node_before(prev, curr, f, c);
+        add_node_before(head, prev, curr, f, c);
 }
 
-void add_node_before(node *prev, node *curr, int f, char c){
-    prev->next = new_node();
-    prev->next->c = c;
-    prev->next->freq = f;
-    prev->next->next = curr;
+void add_node_before(node **head, node *prev, node *curr, int f, char c){
+    if(prev == curr){
+       prev = new_node();
+       prev->c = c;
+       prev->freq = f;
+       prev->next = curr;
+       *head = prev;
+    }
+    else{
+        prev->next = new_node();
+        prev->next->c = c;
+        prev->next->freq = f;
+        prev->next->next = curr;
+    }
 }
 
 void add_node_after(node *curr, int f, char c){
@@ -98,6 +108,24 @@ node *sort_tree(node *list){
 }
 
 void insert_node(node *head, node *new_node){
+    node *prev, *curr;
+    curr = prev = head;
+    while(curr->next && curr->next->freq <= new_node->freq){
+        prev = curr;
+        curr = curr->next;
+    }
+    if(curr->freq < new_node->freq){
+        add_node_after(curr, new_node->freq, new_node->c);
+    }
+    else if(curr->freq == new_node->freq){
+        if(curr->c > new_node->c)
+            add_node_before(&head, prev, curr, new_node->freq, new_node->c);
+        else
+            add_node_after(curr, new_node->freq, new_node->c);
+    }
+    else
+        add_node_before(&head, prev, curr, new_node->freq, new_node->c);
+    
 }
 
 /* The function takes in two nodes, and combine them into one node 
@@ -106,6 +134,8 @@ void insert_node(node *head, node *new_node){
  * */
 node *two_to_one_node(node *first, node *second){
     node *n_node = new_node();
+    first->next = NULL;
+    second->next = NULL;
     n_node->freq = first->freq + second->freq;
     if(first->freq == second->freq){
         if(first->c < second->c){
@@ -127,10 +157,11 @@ node *two_to_one_node(node *first, node *second){
     return n_node;
 }
 
-/* The function takes tree input, and trace each leaf and add the code
- * into double pointer of char.
+/* The function takes tree input, and trace each leaf. If the leaf is going 
+ * to the right, add "1" into the p_array[index]. Else if the leaf is going
+ * to the left, add "0" into the p_array[index].
  * */
 char **tree_to_h_table(node *tree){
-    char **p_array = NULL;
-    return p_array;
+    node *head = tree;
+
 }

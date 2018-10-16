@@ -24,7 +24,7 @@ int main(const int argc, const char *argv[]){
         char_to_array(c, array);
     }
     list = array_to_list(array);
-    //print_list(list);
+    print_list(list);
     tree = sort_tree(list);
     print_tree(tree);
     return 0;
