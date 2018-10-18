@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stddef.h>
+#include <string.h>
 #include "htable_func.h"
 #define ONE_NODE 1
 
@@ -18,7 +19,7 @@ node *new_node(){
  * in each encounter in the array. 
  * */
 void char_to_array(const char c, int *array){
-   array[(int)c]++; 
+    array[(int)c]++; 
 }
 
 
@@ -51,25 +52,25 @@ void insert_list(node **head, int f, char c){
         curr = curr->next;
     }
     if(curr->freq < f){
-        add_node_after(curr, f, c);
+        add_list_after(curr, f, c);
     }
     else if(curr->freq == f){
         if(curr->c > c)
-            add_node_before(head, prev, curr, f, c);
+            add_list_before(head, prev, curr, f, c);
         else
-            add_node_after(curr, f, c);
+            add_list_after(curr, f, c);
     }
     else
-        add_node_before(head, prev, curr, f, c);
+        add_list_before(head, prev, curr, f, c);
 }
 
-void add_node_before(node **head, node *prev, node *curr, int f, char c){
+void add_list_before(node **head, node *prev, node *curr, int f, char c){
     if(prev == curr){
-       prev = new_node();
-       prev->c = c;
-       prev->freq = f;
-       prev->next = curr;
-       *head = prev;
+        prev = new_node();
+        prev->c = c;
+        prev->freq = f;
+        prev->next = curr;
+        *head = prev;
     }
     else{
         prev->next = new_node();
@@ -79,7 +80,7 @@ void add_node_before(node **head, node *prev, node *curr, int f, char c){
     }
 }
 
-void add_node_after(node *curr, int f, char c){
+void add_list_after(node *curr, int f, char c){
     node *temp = curr->next;
     curr->next = new_node();
     curr->next->c = c;
@@ -101,31 +102,41 @@ node *sort_tree(node *list){
             second = head->next;
             head = head->next->next;
             new_node = two_to_one_node(first, second);
-            insert_node(head, new_node);
+            insert_node(&head, new_node);
         }
     }
     return head;
 }
 
-void insert_node(node *head, node *new_node){
-    node *prev, *curr;
-    curr = prev = head;
+void insert_node(node **head, node *new_node){
+    node *prev, *curr, *temp;
+    curr = prev = *head;
     while(curr->next && curr->next->freq <= new_node->freq){
         prev = curr;
         curr = curr->next;
     }
-    if(curr->freq < new_node->freq){
-        add_node_after(curr, new_node->freq, new_node->c);
+    if(curr == *head && curr->freq <= new_node->freq){
+        temp = *head;
+        *head = new_node;
+        new_node->next = temp;
+    }
+    else if(curr->freq < new_node->freq){
+        temp = curr->next;
+        curr->next = new_node;
+        new_node->next = temp;
     }
     else if(curr->freq == new_node->freq){
-        if(curr->c > new_node->c)
-            add_node_before(&head, prev, curr, new_node->freq, new_node->c);
-        else
-            add_node_after(curr, new_node->freq, new_node->c);
+        if(curr->c > new_node->c){
+            temp = prev->next;
+            prev->next = new_node;
+            new_node->next = temp;
+        }
+        else{
+            temp = curr->next;
+            curr->next = new_node;
+            new_node->next = temp;
+        }
     }
-    else
-        add_node_before(&head, prev, curr, new_node->freq, new_node->c);
-    
 }
 
 /* The function takes in two nodes, and combine them into one node 
@@ -157,11 +168,38 @@ node *two_to_one_node(node *first, node *second){
     return n_node;
 }
 
+/* The function put Huffman code into each node of the tree and convert 
+ * the tree to the array of pointer.
+ * */
+char **tree_to_h_table(node *tree){
+    char **h_table = calloc(ASCII_SIZE, sizeof(char*)); 
+    tree->h_encode = "0";
+    encode_node(tree);
+    table_encode(h_table, tree);
+    return h_table;
+}
+
+
 /* The function takes tree input, and trace each leaf. If the leaf is going 
  * to the right, add "1" into the p_array[index]. Else if the leaf is going
  * to the left, add "0" into the p_array[index].
  * */
-char **tree_to_h_table(node *tree){
-    node *head = tree;
+void encode_node(node *tree_node){
+    char *par_code = calloc(strlen(tree_node->h_encode+1), sizeof(char));
+    par_code = strcpy(par_code, tree_node->h_encode);
+    if(tree_node->left){
+        tree_node->left->h_encode = strcat(par_code, L_STR);
+        encode_node(tree_node->left);
+    }
+    if(tree_node->right){ 
+        tree_node->right->h_encode = strcat(par_code, R_STR);
+        encode_node(tree_node->right);
+    }
+    free(par_code);
+}
 
+/* The function traverse through the tree to get the code for each character
+ * then store the code into the h_table.
+ * */
+void table_encode(char **h_table, node *tree){
 }
