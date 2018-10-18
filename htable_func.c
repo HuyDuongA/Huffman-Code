@@ -185,7 +185,7 @@ char **tree_to_h_table(node *tree){
  * to the left, add "0" into the p_array[index].
  * */
 void encode_node(node *tree_node){
-    char *par_code = calloc(strlen(tree_node->h_encode+1), sizeof(char));
+    char *par_code = calloc(strlen(tree_node->h_encode), sizeof(char));
     par_code = strcpy(par_code, tree_node->h_encode);
     if(tree_node->left){
         tree_node->left->h_encode = strcat(par_code, L_STR);
@@ -195,7 +195,7 @@ void encode_node(node *tree_node){
         tree_node->right->h_encode = strcat(par_code, R_STR);
         encode_node(tree_node->right);
     }
-    free(par_code);
+    //free(par_code);
 }
 
 /* The function traverse through the tree to get the code for each character
