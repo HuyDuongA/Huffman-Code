@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <ctype.h>
 #include "htable_func.h"
 #define ONE_NODE 1
 
@@ -88,6 +90,34 @@ void add_list_after(node *curr, int f, char c){
     curr->next->next = temp;
 }
 
+// Function to print binary tree in 2D 
+// It does reverse inorder traversal 
+void print_tree(node *root, int space) 
+{ 
+    // Base case 
+    if (root == NULL) 
+        return; 
+
+    // Increase distance between levels 
+    space += COUNT; 
+
+    // Process right child first 
+    print_tree(root->right, space); 
+
+    // Print current node after space 
+    // count 
+    printf("\n"); 
+    for (int i = COUNT; i < space; i++) 
+        printf(" "); 
+    if(isspace(root->c))
+        printf("%d", root->c); 
+    else
+        printf("%c", root->c);
+    printf(" %d\n", root->freq);
+    // Process left child 
+    print_tree(root->left, space); 
+} 
+
 /* The function takes the linked list and create a tree. This function calls
  * two_to_one_node function to combine first two nodes together.
  * */
@@ -103,6 +133,8 @@ node *sort_tree(node *list){
             head = head->next->next;
             new_node = two_to_one_node(first, second);
             insert_node(&head, new_node);
+            //print2DUtil(head, 0);
+            //printf("===========================================\n");
         }
     }
     return head;
@@ -111,11 +143,14 @@ node *sort_tree(node *list){
 void insert_node(node **head, node *new_node){
     node *prev, *curr, *temp;
     curr = prev = *head;
-    while(curr->next && curr->next->freq <= new_node->freq){
+    int brk_flag = 1;
+    while(curr->next && curr->next->freq <= new_node->freq && brk_flag){
         prev = curr;
         curr = curr->next;
+        if(curr->next->freq == new_node->freq)
+            brk_flag = 0;
     }
-    if(curr == *head && curr->freq <= new_node->freq){
+    if(curr == *head && curr->freq > new_node->freq){
         temp = *head;
         *head = new_node;
         new_node->next = temp;
@@ -125,7 +160,14 @@ void insert_node(node **head, node *new_node){
         curr->next = new_node;
         new_node->next = temp;
     }
-    else if(curr->freq == new_node->freq){
+    else{
+        brk_flag = 1;
+        while(curr->next && curr->next->c < new_node->c && brk_flag){
+            prev = curr;
+            curr = curr->next;
+            if(curr->next->freq > new_node->freq)
+                brk_flag = 0;
+        }
         if(curr->c > new_node->c){
             temp = prev->next;
             prev->next = new_node;
@@ -148,20 +190,21 @@ node *two_to_one_node(node *first, node *second){
     first->next = NULL;
     second->next = NULL;
     n_node->freq = first->freq + second->freq;
+    if(first->c < second->c)
+        n_node->c = first->c;
+    else
+        n_node->c = second->c;
     if(first->freq == second->freq){
         if(first->c < second->c){
-            n_node->c = first->c;
             n_node->left = first;
             n_node->right = second;
         }
         else{
-            n_node->c = second->c;
             n_node->left = second;
             n_node->right = first;
         }
     }
     else{
-        n_node->c = first->c;
         n_node->left = first;
         n_node->right = second;
     }
@@ -185,21 +228,40 @@ char **tree_to_h_table(node *tree){
  * to the left, add "0" into the p_array[index].
  * */
 void encode_node(node *tree_node){
-    char *par_code = calloc(strlen(tree_node->h_encode), sizeof(char));
-    par_code = strcpy(par_code, tree_node->h_encode);
     if(tree_node->left){
-        tree_node->left->h_encode = strcat(par_code, L_STR);
+        char *p_code_l = calloc(strlen(tree_node->h_encode)+2, sizeof(char));
+        p_code_l = strcpy(p_code_l, tree_node->h_encode);
+        tree_node->left->h_encode = strcat(p_code_l, L_STR);
         encode_node(tree_node->left);
     }
     if(tree_node->right){ 
-        tree_node->right->h_encode = strcat(par_code, R_STR);
+        char *p_code_r = calloc(strlen(tree_node->h_encode)+2, sizeof(char));
+        p_code_r = strcpy(p_code_r, tree_node->h_encode);
+        tree_node->right->h_encode = strcat(p_code_r, R_STR);
         encode_node(tree_node->right);
     }
-    //free(par_code);
 }
 
-/* The function traverse through the tree to get the code for each character
+/* The function traverses through the tree to get the code for each character
  * then store the code into the h_table.
  * */
 void table_encode(char **h_table, node *tree){
+    if(tree->left)
+        table_encode(h_table, tree->left);
+    else
+        h_table[(int)tree->c] = tree->h_encode;
+    if(tree->right)
+        table_encode(h_table, tree->right);
+    else
+        h_table[(int)tree->c] = tree->h_encode;
+}
+
+/* The function traverse through pointer array h_table and print non-NULL 
+ * string.
+ * */
+void print_htable(char **h_table){
+    for(int i = 0; i < ASCII_SIZE; ++i){
+        if(h_table[i])
+            printf("%#04x: %s\n", i, h_table[i]+1);
+    }
 }

@@ -4,6 +4,7 @@ CCFLAGS  = -std=c99 -g -pedantic -Wall
 LDFLAGS  = -lm
 SOURCES  = $(wildcard *.c)
 INCLUDES = $(wildcard *.h)
+TEST 	 = $(wildcard Test/*.txt)
 OBJECTS  = $(SOURCES:.c=.o)
 
 all:$(TARGET)
@@ -17,7 +18,3 @@ $(OBJECTS):$(SOURCES) $(INCLUDES)
 clean:
 	rm -f $(TARGET) $(OBJECTS)
 
-test:
-	./$(TARGET) Test/test0.txt
-	./$(TARGET) Test/test1.txt
-	./$(TARGET) Test/test2.txt

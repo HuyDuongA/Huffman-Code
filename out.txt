@@ -1,0 +1,19 @@
+Run Test/e_freq.txt
+a: 3
+b: 3
+c: 3
+
+          b 3
+
+     a 6
+
+          a 3
+
+a 9
+
+     c 3
+0x61: 10
+0x62: 11
+0x63: 0
+Run Test/Huy1.txt
+Crashed at Test/Huy1.txt

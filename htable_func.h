@@ -4,6 +4,7 @@
 #define ONE_NODE 1
 #define L_STR "0"
 #define R_STR "1"
+#define COUNT 5
 
 typedef struct node node;
 struct node{
@@ -27,5 +28,7 @@ node *two_to_one_node(node *, node *);
 char **tree_to_h_table(node *);
 void encode_node(node *);
 void table_encode(char **, node *);
+void print_htable(char **);
+void print_tree(node *, int);
 
 #endif

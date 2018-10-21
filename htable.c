@@ -11,23 +11,26 @@ void print_list(node *list){
     }
 }
 
-void print_tree(node *tree){
-
-}
-
 int main(const int argc, const char *argv[]){
     char c;
-    int fd = open(argv[1], O_RDONLY);
-    int array[ASCII_SIZE] = {0}; 
+    int array[ASCII_SIZE] = {0};
     char **h_table;
     node *list, *tree;
-    while(read(fd, &c, sizeof(char))){
-        char_to_array(c, array);
+    FILE *fp = NULL;
+    if((fp = fopen(argv[1],"r"))){
+        while((c = getc(fp)) != EOF)
+            char_to_array(c, array);
+        list = array_to_list(array);
+        if(list){
+            print_list(list);
+            tree= sort_tree(list);
+            print_tree(tree, 0);
+            h_table = tree_to_h_table(tree);
+            print_htable(h_table);
+        }
     }
-    list = array_to_list(array);
-    print_list(list);
-    tree = sort_tree(list);
-    h_table = tree_to_h_table(tree);
-    print_tree(tree);
+    else{
+        perror(argv[1]);
+    }
     return 0;
 }
