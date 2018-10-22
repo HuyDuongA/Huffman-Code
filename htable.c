@@ -19,12 +19,12 @@ int main(const int argc, const char *argv[]){
     FILE *fp = NULL;
     if((fp = fopen(argv[1],"r"))){
         while((c = getc(fp)) != EOF)
-            char_to_array(c, array);
+            char_to_array((unsigned char) c, array);
         list = array_to_list(array);
         if(list){
-            print_list(list);
+            //print_list(list);
             tree= sort_tree(list);
-            print_tree(tree, 0);
+            //print_tree(tree, 0);
             h_table = tree_to_h_table(tree);
             print_htable(h_table);
         }

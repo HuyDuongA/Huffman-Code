@@ -140,44 +140,38 @@ node *sort_tree(node *list){
     return head;
 }
 
+/* The function traverses through the node until it finds the node that has
+ * higher frequency then new_node->freq. 
+ * */
 void insert_node(node **head, node *new_node){
     node *prev, *curr, *temp;
     curr = prev = *head;
     int brk_flag = 1;
-    while(curr->next && curr->next->freq <= new_node->freq && brk_flag){
-        prev = curr;
-        curr = curr->next;
-        if(curr->next->freq == new_node->freq)
+    while(curr->next && brk_flag){
+        if(curr->next->freq > new_node->freq)
             brk_flag = 0;
+        else if(curr->next->freq == new_node->freq){
+            if(curr->next->c > new_node->c)
+                brk_flag = 0;
+            else{
+                prev = curr;
+                curr = curr->next;
+            }
+        }
+        else{
+            prev = curr;
+            curr = curr->next;
+        }
     }
     if(curr == *head && curr->freq > new_node->freq){
         temp = *head;
         *head = new_node;
         new_node->next = temp;
     }
-    else if(curr->freq < new_node->freq){
+    else{
         temp = curr->next;
         curr->next = new_node;
         new_node->next = temp;
-    }
-    else{
-        brk_flag = 1;
-        while(curr->next && curr->next->c < new_node->c && brk_flag){
-            prev = curr;
-            curr = curr->next;
-            if(curr->next->freq > new_node->freq)
-                brk_flag = 0;
-        }
-        if(curr->c > new_node->c){
-            temp = prev->next;
-            prev->next = new_node;
-            new_node->next = temp;
-        }
-        else{
-            temp = curr->next;
-            curr->next = new_node;
-            new_node->next = temp;
-        }
     }
 }
 
