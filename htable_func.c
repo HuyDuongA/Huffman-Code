@@ -20,7 +20,7 @@ node *new_node(){
 /* The function takes a character as index value and increase array[index]
  * in each encounter in the array. 
  * */
-void char_to_array(const char c, int *array){
+void char_to_array(unsigned char c, int *array){
     array[(int)c]++; 
 }
 
@@ -38,7 +38,7 @@ node *array_to_list(int *array){
                 head->freq = array[i];
             }
             else
-                insert_list(&head, array[i], (char)i);    
+                insert_list(&head, array[i], (unsigned char)i);    
         }
     }
     return head;
@@ -46,7 +46,7 @@ node *array_to_list(int *array){
 
 /* Insert node to the right place in the list.
  * */
-void insert_list(node **head, int f, char c){
+void insert_list(node **head, int f, unsigned char c){
     node *prev, *curr;
     curr = prev = *head;
     while(curr->next && curr->next->freq <= f){
@@ -66,7 +66,8 @@ void insert_list(node **head, int f, char c){
         add_list_before(head, prev, curr, f, c);
 }
 
-void add_list_before(node **head, node *prev, node *curr, int f, char c){
+void add_list_before(node **head, node *prev, node *curr, 
+    int f, unsigned char c){
     if(prev == curr){
         prev = new_node();
         prev->c = c;
@@ -82,7 +83,7 @@ void add_list_before(node **head, node *prev, node *curr, int f, char c){
     }
 }
 
-void add_list_after(node *curr, int f, char c){
+void add_list_after(node *curr, int f, unsigned char c){
     node *temp = curr->next;
     curr->next = new_node();
     curr->next->c = c;
@@ -256,6 +257,6 @@ void table_encode(char **h_table, node *tree){
 void print_htable(char **h_table){
     for(int i = 0; i < ASCII_SIZE; ++i){
         if(h_table[i])
-            printf("%#04x: %s\n", i, h_table[i]+1);
+            printf("0x%02x: %s\n", i, h_table[i]+1);
     }
 }

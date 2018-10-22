@@ -8,7 +8,7 @@
 
 typedef struct node node;
 struct node{
-    char c;
+    unsigned char c;
     int freq;
     char *h_encode;
     node *next;
@@ -17,11 +17,11 @@ struct node{
 };
 
 node *new_node();
-void char_to_array(const char, int *);
+void char_to_array(unsigned char, int *);
 node *array_to_list(int *);
-void add_list_before(node **,node *, node*, int, char);
-void add_list_after(node *, int, char);
-void insert_list(node **, int, char);
+void add_list_before(node **,node *, node*, int, unsigned char);
+void add_list_after(node *, int, unsigned char);
+void insert_list(node **, int, unsigned char);
 node *sort_tree(node *);
 void insert_node(node **, node *);
 node *two_to_one_node(node *, node *);
