@@ -8,7 +8,7 @@
 
 node *new_node(){
     node *new_node = calloc(ONE_NODE, sizeof(node));
-    new_node->c = (char)NULL;
+    new_node->c = 0;
     new_node->freq = 0;
     new_node->h_encode = NULL;
     new_node->next = NULL;
@@ -134,8 +134,6 @@ node *sort_tree(node *list){
             head = head->next->next;
             new_node = two_to_one_node(first, second);
             insert_node(&head, new_node);
-            //print2DUtil(head, 0);
-            //printf("===========================================\n");
         }
     }
     return head;
@@ -211,7 +209,7 @@ node *two_to_one_node(node *first, node *second){
  * */
 char **tree_to_h_table(node *tree){
     char **h_table = calloc(ASCII_SIZE, sizeof(char*)); 
-    tree->h_encode = "0";
+    tree->h_encode = calloc(1, sizeof(cha));
     encode_node(tree);
     table_encode(h_table, tree);
     return h_table;
@@ -239,6 +237,8 @@ void encode_node(node *tree_node){
 
 /* The function traverses through the tree to get the code for each character
  * then store the code into the h_table.
+ * NOTE: h_table has the address of each tree nodes, at the end, free all 
+ * member of tree node is RECOMMENDED. Don't free both htable and tree.
  * */
 void table_encode(char **h_table, node *tree){
     if(tree->left)
@@ -257,6 +257,21 @@ void table_encode(char **h_table, node *tree){
 void print_htable(char **h_table){
     for(int i = 0; i < ASCII_SIZE; ++i){
         if(h_table[i])
-            printf("0x%02x: %s\n", i, h_table[i]+1);
+            printf("0x%02x: %s\n", i, h_table[i]);
     }
 }
+
+/* Traverse recursively through the left side and right side of the tree 
+ * to free each left and right child.
+ * */
+void clean_tree(node *t_node){
+    if(!t_node->left && !t_node->right){
+        free(t_node->h_encode);
+        free(t_node);
+    }
+    else if(t_node->left)
+        clean_tree(t_node->left);
+    else if(t_node->right)
+        clean_tree(t_node->right);
+}
+

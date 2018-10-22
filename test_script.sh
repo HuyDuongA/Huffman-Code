@@ -12,4 +12,4 @@ for f in Test/*.txt
     fi
 done > out.txt
 
-diff expect.txt out.txt > diff.txt
+diff expect.txt out.txt > diff.txt | cat

@@ -26,6 +26,7 @@ int main(const int argc, const char *argv[]){
             tree= sort_tree(list);
             h_table = tree_to_h_table(tree);
             print_htable(h_table);
+            clean_tree(tree);
         }
     }
     else{

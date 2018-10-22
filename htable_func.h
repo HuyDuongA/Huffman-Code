@@ -30,5 +30,6 @@ void encode_node(node *);
 void table_encode(char **, node *);
 void print_htable(char **);
 void print_tree(node *, int);
+void clean_tree(node *);
 
 #endif
