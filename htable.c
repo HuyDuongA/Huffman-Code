@@ -3,14 +3,6 @@
 #include <unistd.h>
 #include "htable_func.h"
 
-void print_list(node *list){
-    node *temp = list;
-    while(temp){
-        printf("%c: %d\n", temp->c, temp->freq);
-        temp = temp->next;
-    }
-}
-
 int main(const int argc, const char *argv[]){
     int c;
     int array[ASCII_SIZE] = {0};

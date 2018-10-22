@@ -67,7 +67,7 @@ void insert_list(node **head, int f, unsigned char c){
 }
 
 void add_list_before(node **head, node *prev, node *curr, 
-    int f, unsigned char c){
+        int f, unsigned char c){
     if(prev == curr){
         prev = new_node();
         prev->c = c;
@@ -209,7 +209,7 @@ node *two_to_one_node(node *first, node *second){
  * */
 char **tree_to_h_table(node *tree){
     char **h_table = calloc(ASCII_SIZE, sizeof(char*)); 
-    tree->h_encode = calloc(1, sizeof(cha));
+    tree->h_encode = calloc(1, sizeof(char));
     encode_node(tree);
     table_encode(h_table, tree);
     return h_table;
@@ -273,5 +273,13 @@ void clean_tree(node *t_node){
         clean_tree(t_node->left);
     else if(t_node->right)
         clean_tree(t_node->right);
+}
+
+void print_list(node *list){
+    node *temp = list;
+    while(temp){
+        printf("%c: %d\n", temp->c, temp->freq);
+        temp = temp->next;
+    }   
 }
 
