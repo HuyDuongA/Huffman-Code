@@ -8,6 +8,10 @@
 
 node *new_node(){
     node *new_node = calloc(ONE_NODE, sizeof(node));
+    if(!new_node){
+        perror("calloc failed\n");
+        exit(1);
+    }
     new_node->c = 0;
     new_node->freq = 0;
     new_node->h_encode = NULL;
@@ -208,8 +212,16 @@ node *two_to_one_node(node *first, node *second){
  * the tree to the array of pointer.
  * */
 char **tree_to_h_table(node *tree){
-    char **h_table = calloc(ASCII_SIZE, sizeof(char*)); 
+    char **h_table = calloc(ASCII_SIZE, sizeof(char*));
+    if(!h_table){
+        perror("calloc failed\n");
+        exit(1);
+    }
     tree->h_encode = calloc(1, sizeof(char));
+    if(!tree->h_encode){
+        perror("calloc failed\n");
+        exit(1);
+    }
     encode_node(tree);
     table_encode(h_table, tree);
     return h_table;
@@ -223,12 +235,20 @@ char **tree_to_h_table(node *tree){
 void encode_node(node *tree_node){
     if(tree_node->left){
         char *p_code_l = calloc(strlen(tree_node->h_encode)+2, sizeof(char));
+        if(!p_code_l){
+            perror("calloc failed\n");
+            exit(1);
+        }
         p_code_l = strcpy(p_code_l, tree_node->h_encode);
         tree_node->left->h_encode = strcat(p_code_l, L_STR);
         encode_node(tree_node->left);
     }
     if(tree_node->right){ 
         char *p_code_r = calloc(strlen(tree_node->h_encode)+2, sizeof(char));
+        if(!p_code_r){
+            perror("calloc failed\n");
+            exit(1);
+        }
         p_code_r = strcpy(p_code_r, tree_node->h_encode);
         tree_node->right->h_encode = strcat(p_code_r, R_STR);
         encode_node(tree_node->right);
